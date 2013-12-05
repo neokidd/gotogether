@@ -2,5 +2,6 @@ sumeru.packages(
    'config',
    'controller',
    'model',
-   'library'
+   'library',
+   'assets'
 );

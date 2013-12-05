@@ -1,4 +1,5 @@
 sumeru.packages(
-'itworks.js'
+'itworks.js',
+'home.js'
 )
 
