@@ -29,13 +29,6 @@ App.home = sumeru.controller.create(function(env, session){
     env.onready = function(){
 //        session.notes.destroy();
 
-//        var point = new BMap.Point(116.331398,39.897445);
-//        map.centerAndZoom(point,18);
-//        var i = 0;
-//        navigator.geolocation.watchPosition(successCallback,
-//            errorCallback,
-//            {maximumAge:600000, enableHighAccuracy:true});
-
         Library.touch.on("#positionBtn","touchend",getPosition);
 
 
@@ -53,6 +46,13 @@ App.home = sumeru.controller.create(function(env, session){
 //        keymaster('0,1,2,3,4,5', keyboardPress);
     };
 
+    var map = new BMap.Map("map");            // 创建Map实例
+    var point = new BMap.Point(116.331398,39.897445);
+//        map.centerAndZoom(point,18);
+    var i = 0;
+//        navigator.geolocation.watchPosition(successCallback,
+//            errorCallback,
+//            {maximumAge:600000, enableHighAccuracy:true});
     function successCallback(position) {
         // By using the 'maximumAge' option above, the position
         // object is guaranteed to be at most 10 minutes old.
@@ -60,8 +60,8 @@ App.home = sumeru.controller.create(function(env, session){
         var mk = new BMap.Marker(p);
         map.addOverlay(mk);
         map.panTo(p);
-        //alert('您的H5位置：'+p.lng+','+p.lat);
-        //document.getElementById("txtlog").innerHtml.value= i++ + ' 您的H5位置：'+p.lng+','+p.lat;
+        alert('您的H5位置：'+p.lng+','+p.lat);
+//        document.getElementById("txtlog").innerHtml= i++ + ' 您的H5位置：'+p.lng+','+p.lat;
     }
 
     function errorCallback(error) {
