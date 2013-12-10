@@ -1,0 +1,25 @@
+<!--<div id="aa">-->
+<div id="operation">
+    <button height=20% id="positionBtn"> 手动定位 </button>
+</div>
+<div id="map"></div>
+<!--</div>-->
+<div>
+    <block tpl-id="locationLogBlock">
+        <table class="listContent" rules="all" frame="box">
+            {{#each data}}
+            <tr>
+                <td>GroupId：{{this.groupid}}</td>
+                <td>Name：{{this.name}}</td>
+                <td>UserId：{{this.userid}}</td>
+                <td>x:{{this.x}}</td>
+                <td>y:{{this.y}}</td>
+            </tr>
+            {{else}}
+            <tr>
+                <td>no data</td>
+            </tr>
+            {{/each}}
+        </table>
+    </block>
+</div>

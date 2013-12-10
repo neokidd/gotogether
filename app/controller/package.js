@@ -1,5 +1,6 @@
 sumeru.packages(
-'itworks.js',
-'home.js'
+    'itworks.js',
+    'homeController.js',
+    'locationController.js'
 )
 
