@@ -1,19 +1,35 @@
-<!--<div id="aa">-->
 <div id="operation">
     <button height=20% id="positionBtn"> 手动定位 </button>
 </div>
-<div id="map"></div>
-<!--</div>-->
+<!--<div id="map"></div>-->
+<div id="username">
+    <input id="usernameInput" type="text"/>
+    <button id="setUsername">确定</button>
+</div>
 <div>
     <block tpl-id="locationLogBlock">
         <table class="listContent" rules="all" frame="box">
+            <tr>
+                <th>GroupId</th>
+                <th>Name</th>
+                <th>UserId</th>
+                <th>location</th>
+            </tr>
             {{#each data}}
             <tr>
-                <td>GroupId：{{this.groupid}}</td>
-                <td>Name：{{this.name}}</td>
-                <td>UserId：{{this.userid}}</td>
-                <td>x:{{this.x}}</td>
-                <td>y:{{this.y}}</td>
+                <td>{{this.groupId}}</td>
+                <td>{{this.name}}</td>
+                <td>{{this.userId}}</td>
+                <td>
+                    <table rules="all">
+                        {{#each this.coordinate}}
+                            <tr>
+                                <td>{{this.x}}</td>
+                                <td>{{this.y}}</td>
+                            </tr>
+                        {{/each}}
+                    </table>
+                </td>
             </tr>
             {{else}}
             <tr>

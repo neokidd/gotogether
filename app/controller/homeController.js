@@ -35,7 +35,7 @@ App.home = sumeru.controller.create(function(env, session){
 
             localStorage.setItem("userName",userNameInput.value.trim());
 
-            groupId = "123456789Group";
+            groupId = Library.generateId.getGroupId();//"123456789Group";
             localStorage.setItem("groupId",groupId);
             shareLinkInput.value = "http://172.22.148.231:8080/" + "debug.html/location?groupId=" + groupId;
             goLocationalbe = true

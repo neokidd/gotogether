@@ -4,11 +4,10 @@
 Model.location = function(exports){
     exports.config = {
         fields : [
-            { name : 'userid', type : 'string'},
+            { name : 'userId', type : 'string'},
             { name : 'name', type : 'string', defaultValue:''},
-            { name : 'groupid', type : 'string'},
-            { name:'x',type:'int'},
-            { name:'y',type:'int'}
+            { name : 'groupId', type : 'string'},
+            { name : 'coordinate', type : 'array',defaultValue:[]}
         ]
     }
 }
