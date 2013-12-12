@@ -633,7 +633,7 @@ var runnable = function(fw){
 				        newModel[oneField['name']] = fw.utils.getTimeStamp();
 				    } else if(oneField['type'] == 'array'){
 				    	//FIXME array的默认值不应该是eval出来的，标记，以后要改
-				    	newModel[oneField['name']] = eval(oneField['defaultValue']) || [];
+				    	newModel[oneField['name']] = fw.utils.deepClone(oneField['defaultValue']) || [];
 				    } else if(oneField['type'] == 'object'){
 						newModel[oneField['name']] = fw.utils.parseJSON(oneField['defaultValue']) || [];
 				    } else {
