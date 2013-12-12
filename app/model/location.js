@@ -5,7 +5,7 @@ Model.location = function(exports){
     exports.config = {
         fields : [
             { name : 'userId', type : 'string'},
-            { name : 'name', type : 'string', defaultValue:''},
+            { name : 'name', type : 'string'},
             { name : 'groupId', type : 'string'},
             { name : 'coordinate', type : 'array',defaultValue:[]}
         ]

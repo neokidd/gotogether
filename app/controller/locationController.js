@@ -17,6 +17,9 @@ App.location = sumeru.controller.create(function(env, session){
     var usersInfo = {};
     var historyLocMaxLen = 10;
     var userName = localStorage.getItem('userName') || '';
+    var map;
+    var locSuccessCallback;
+    var roleController = Library.mapOverlay.createRoleController();
 
     var getLocation = function(){
         groupId = session.get('groupId');
@@ -27,12 +30,17 @@ App.location = sumeru.controller.create(function(env, session){
                 usersInfo[item.userId] = item;
             });
 
-
             session.bind('locationLogBlock', {
                 data : locationCollection.find()
             });
 
+            if(map) {
+                roleController.updateRolesData(locationCollection.getData());
+                roleController.run(map);
+            }
+
         });
+
     };
     env.onload = function(){
         return [getLocation];
@@ -41,9 +49,9 @@ App.location = sumeru.controller.create(function(env, session){
         doRender("location", ['push','right']);
     };
 
-    var map;
-
     env.onready = function(viewRoot){
+        initMap();
+
         var usernameInput = viewRoot.querySelector("#usernameInput");
         usernameInput.value = userName;
 
@@ -59,40 +67,43 @@ App.location = sumeru.controller.create(function(env, session){
 
         });
 
-
-//        if(!map) {
-//            map = new BMap.Map("map");            // 创建Map实例
-//            var point = new BMap.Point(116.404, 39.915);    // 创建点坐标
-//            map.centerAndZoom(point,15);                     // 初始化地图,设置中心点坐标和地图级别。
-//            map.enableScrollWheelZoom();                            //启用滚轮放大缩小
-//        }
-//
 //        Library.touch.on("#positionBtn","touchend",getPosition);
     };
 
 
-//    navigator.geolocation.watchPosition(successCallback,
+//    navigator.geolocation.watchPosition(locSuccessCallback,
 //        errorCallback,
 //        {maximumAge:600000, enableHighAccuracy:true});
 
-    window.setInterval(successCallback,5000);
+    function initMap(){
+        if(!map) {
+            map = new BMap.Map("map");            // 创建Map实例
+            var point = new BMap.Point(116.404, 39.915);    // 创建点坐标
+            map.centerAndZoom(point,15);                     // 初始化地图,设置中心点坐标和地图级别。
+            map.enableScrollWheelZoom();                            //启用滚轮放大缩小
+            map.addControl(new BMap.NavigationControl());
+        }
+    }
 
-    function successCallback(position) {
+    locSuccessCallback = function(position) {
         // By using the 'maximumAge' option above, the position
         // object is guaranteed to be at most 10 minutes old.
-        if(position) {
-            var p = new BMap.Point(position.coords.longitude, position.coords.latitude);
-            var mk = new BMap.Marker(p);
-           map.addOverlay(mk);
-            map.panTo(p);
-        } else {
-            var p = {lng:Math.random(),lat:Math.random()};
-        }
+//        if(position) {
+//            var p = new BMap.Point(position.coords.longitude, position.coords.latitude);
+//            var mk = new BMap.Marker(p);
+//            map.addOverlay(mk);
+//            map.panTo(p);
+//        } else {
+//            var p = {lng:Math.random(),lat:Math.random()};
+//        }
+//
+//        var coordinateItem = {
+//            'x':p.lng,
+//            'y':p.lat
+//        };
 
-        var coordinateItem = {
-            'x':p.lng,
-            'y':p.lat
-        };
+        var locArr = usersInfo[userId] && usersInfo[userId].coordinate;
+        var coordinateItem = Library.generateLocation.generateNextLoc(locArr);
 
         if(!usersInfo[userId]) {
             var newItem = {
@@ -106,11 +117,11 @@ App.location = sumeru.controller.create(function(env, session){
         } else{
             var currLocLen = usersInfo[userId].coordinate.length;
             if(historyLocMaxLen <= currLocLen ) {
-                usersInfo[userId].coordinate.splice(0,currLocLen - historyLocMaxLen + (1+ historyLocMaxLen/10));
+                usersInfo[userId].coordinate.splice(0,currLocLen - historyLocMaxLen );
             }
             usersInfo[userId].coordinate.push(coordinateItem);
 
-            session.location.update({'groupId':groupId,'userId':userId},{'name':userName,'coordinate':usersInfo[userId].coordinate});
+            session.location.update({'name':userName},{'groupId':groupId,'userId':userId});
         }
         session.location.save();
     }
@@ -121,8 +132,10 @@ App.location = sumeru.controller.create(function(env, session){
     }
 
     function getPosition() {
-        navigator.geolocation.getCurrentPosition(successCallback,
+        navigator.geolocation.getCurrentPosition(locSuccessCallback,
             errorCallback,
             {maximumAge:600000, enableHighAccuracy:true});
     }
+
+    window.setInterval(locSuccessCallback,5000);
 });
