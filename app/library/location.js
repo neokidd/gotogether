@@ -62,7 +62,7 @@ Library.location = sumeru.Library.create(function(exports){
             }
         }
 
-
+        generateNewLoc();
         setInterval(generateNewLoc,timeInterval);
     };
 
@@ -104,6 +104,7 @@ Library.location = sumeru.Library.create(function(exports){
             return adjust;
         };
 
+        generateNewLoc();
         setInterval(generateNewLoc,timeInterval);
 
     };
