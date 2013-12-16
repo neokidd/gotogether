@@ -1,5 +1,6 @@
 sumeru.packages(
     'generateId.js',
-    'generateLocation.js',
-    'mapOverlay.js'
+    'location.js',
+    'mapOverlay.js',
+    'distance.js'
 );

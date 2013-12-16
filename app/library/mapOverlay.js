@@ -30,7 +30,7 @@ Library.mapOverlay = sumeru.Library.create(function(exports){
                 if(update || 0 == this.BMapPointArr.length) {
                     var locationPointArr = this.dataSource.coordinate || [];
                     locationPointArr.forEach(function(item){
-                        BMapPointArr.push(new BMap.Point(item.x,item.y));
+                        BMapPointArr.push(new BMap.Point(item.lng,item.lat));
                     });
                 }
 

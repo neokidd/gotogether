@@ -17,7 +17,7 @@ App.home = sumeru.controller.create(function(env, session){
     env.onload = function(){
         return [function(){
             isDebug = session.get('debug');
-            session.bind("debugBlock",{
+            session.bind("debugOptions",{
                 debug:isDebug
             })
         }];
@@ -71,18 +71,14 @@ App.home = sumeru.controller.create(function(env, session){
             if(goLocationalbe) {
                 var query = {groupId:groupId};
                 if(isDebug){
-                    query.debug = 1;
+                    query.displayLocData = viewRoot.querySelector('#displayLocData').checked;
+                    query.fakeLoc = viewRoot.querySelector('#fakeLoc').checked;
                 }
                 env.redirect('/location',query);
             } else {
                 alert("generate a share link firstly");
             }
         }
-
-
-
     }
-
-
 
 });

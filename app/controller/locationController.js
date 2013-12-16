@@ -20,11 +20,13 @@ App.location = sumeru.controller.create(function(env, session){
     var map;
     var locSuccessCallback;
     var roleController = Library.mapOverlay.createRoleController();
+    var isFakeLoc;
 
     var getLocation = function(){
         groupId = session.get('groupId');
         fetchOptions.groupId = groupId;
-        var isDebug = parseInt(session.get('debug'));
+        var isDisplayLocData = "true" == session.get('displayLocData');
+        isFakeLoc = "true" == session.get('fakeLoc');
 
         session.location = env.subscribe('pubLocation', fetchOptions,function(locationCollection){
             locationCollection.getData().forEach(function(item){
@@ -33,7 +35,7 @@ App.location = sumeru.controller.create(function(env, session){
 
             session.bind('locationLogBlock', {
                 data : locationCollection.find(),
-                debug : isDebug
+                displayLocData : isDisplayLocData
             });
 
             if(map) {
@@ -69,13 +71,12 @@ App.location = sumeru.controller.create(function(env, session){
 
         });
 
-//        Library.touch.on("#positionBtn","touchend",getPosition);
+        if(isFakeLoc && usersInfo[userId] && usersInfo[userId].coordinate) {
+            Library.generateLocation.currentLoc = usersInfo[userId].coordinate[usersInfo[userId].coordinate.length - 1];
+        }
+
+        Library.location.genererateLoction(isFakeLoc,locSuccessCallback);
     };
-
-
-//    navigator.geolocation.watchPosition(locSuccessCallback,
-//        errorCallback,
-//        {maximumAge:600000, enableHighAccuracy:true});
 
     function initMap(){
         if(!map) {
@@ -87,31 +88,15 @@ App.location = sumeru.controller.create(function(env, session){
         }
     }
 
-    locSuccessCallback = function(position) {
-        // By using the 'maximumAge' option above, the position
-        // object is guaranteed to be at most 10 minutes old.
-//        if(position) {
-//            var p = new BMap.Point(position.coords.longitude, position.coords.latitude);
-//            var mk = new BMap.Marker(p);
-//            map.addOverlay(mk);
-//            map.panTo(p);
-//        } else {
-//            var p = {lng:Math.random(),lat:Math.random()};
-//        }
-//
-//        var coordinateItem = {
-//            'x':p.lng,
-//            'y':p.lat
-//        };
+    locSuccessCallback = function(originPosition) {
 
-        var locArr = usersInfo[userId] && usersInfo[userId].coordinate;
-        var coordinateItem = Library.generateLocation.generateNextLoc(locArr);
+        var position = Library.location.formatLoction(originPosition);
 
         if(!usersInfo[userId]) {
             var newItem = {
                 'userId':userId,
                 'groupId':groupId,
-                'coordinate':[coordinateItem],
+                'coordinate':[position],
                 'name':userName
             };
 
@@ -121,23 +106,10 @@ App.location = sumeru.controller.create(function(env, session){
             if(historyLocMaxLen <= currLocLen ) {
                 usersInfo[userId].coordinate.splice(0,currLocLen - historyLocMaxLen );
             }
-            usersInfo[userId].coordinate.push(coordinateItem);
+            usersInfo[userId].coordinate.push(position);
 
             session.location.update({'name':userName},{'groupId':groupId,'userId':userId});
         }
         session.location.save();
     }
-
-    function errorCallback(error) {
-        // Update a div element with error.message.
-        alert('H5 failed'+ error.code);
-    }
-
-    function getPosition() {
-        navigator.geolocation.getCurrentPosition(locSuccessCallback,
-            errorCallback,
-            {maximumAge:600000, enableHighAccuracy:true});
-    }
-
-    window.setInterval(locSuccessCallback,5000);
 });
