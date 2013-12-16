@@ -3,7 +3,7 @@
  */
 sumeru.router.add(
     {
-        pattern: 'location',
+        pattern: '/location',
         action: 'App.location'
     }
 );
@@ -24,6 +24,7 @@ App.location = sumeru.controller.create(function(env, session){
     var getLocation = function(){
         groupId = session.get('groupId');
         fetchOptions.groupId = groupId;
+        var isDebug = parseInt(session.get('debug'));
 
         session.location = env.subscribe('pubLocation', fetchOptions,function(locationCollection){
             locationCollection.getData().forEach(function(item){
@@ -31,7 +32,8 @@ App.location = sumeru.controller.create(function(env, session){
             });
 
             session.bind('locationLogBlock', {
-                data : locationCollection.find()
+                data : locationCollection.find(),
+                debug : isDebug
             });
 
             if(map) {

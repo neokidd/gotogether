@@ -3,13 +3,25 @@
  */
 sumeru.router.add(
     {
-        pattern: '',
+        pattern: '/home',
         action: 'App.home'
     }
 );
 
+sumeru.router.setDefault('App.home');
 
 App.home = sumeru.controller.create(function(env, session){
+
+    var isDebug = false;
+
+    env.onload = function(){
+        return [function(){
+            isDebug = session.get('debug');
+            session.bind("debugBlock",{
+                debug:isDebug
+            })
+        }];
+    };
 
     env.onrender = function(doRender){
         doRender("home", ['push','left']);
@@ -53,13 +65,19 @@ App.home = sumeru.controller.create(function(env, session){
             },3000)
         });
 
-        Library.touch.on("#goLocation","touchend", function(){
+        Library.touch.on("#goLocation","touchend", goLocationPage);
+
+        function goLocationPage(){
             if(goLocationalbe) {
-                env.redirect('location',{groupId:groupId});
+                var query = {groupId:groupId};
+                if(isDebug){
+                    query.debug = 1;
+                }
+                env.redirect('/location',query);
             } else {
                 alert("generate a share link firstly");
             }
-        });
+        }
 
 
 

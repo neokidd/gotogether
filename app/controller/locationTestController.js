@@ -3,7 +3,7 @@
  */
 sumeru.router.add(
     {
-        pattern: 'locationtest',
+        pattern: '/locationtest',
         action: 'App.locationtest'
     }
 );

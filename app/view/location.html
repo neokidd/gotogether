@@ -8,35 +8,37 @@
 </div>
 <div>
     <block tpl-id="locationLogBlock">
-        <table class="listContent" rules="all" frame="box">
-            <tr>
-                <th>GroupId</th>
-                <th>Name</th>
-                <th>UserId</th>
-                <th>location</th>
-            </tr>
-            {{#each data}}
-            <tr>
-                <td>{{this.groupId}}</td>
-                <td>{{this.name}}</td>
-                <td>{{this.userId}}</td>
-                <td>
-                    <table rules="all">
-                        {{#each this.coordinate}}
-                            <tr>
-                                <td>{{this.x}}</td>
-                                <td>{{this.y}}</td>
-                                <td>{{this.time}}</td>
-                            </tr>
-                        {{/each}}
-                    </table>
-                </td>
-            </tr>
-            {{else}}
-            <tr>
-                <td>no data</td>
-            </tr>
-            {{/each}}
-        </table>
+        {{#if debug}}
+            <table class="listContent" rules="all" frame="box">
+                <tr>
+                    <th>GroupId</th>
+                    <th>Name</th>
+                    <th>UserId</th>
+                    <th>location</th>
+                </tr>
+                {{#each data}}
+                <tr>
+                    <td>{{this.groupId}}</td>
+                    <td>{{this.name}}</td>
+                    <td>{{this.userId}}</td>
+                    <td>
+                        <table rules="all">
+                            {{#each this.coordinate}}
+                                <tr>
+                                    <td>{{this.x}}</td>
+                                    <td>{{this.y}}</td>
+                                    <td>{{this.time}}</td>
+                                </tr>
+                            {{/each}}
+                        </table>
+                    </td>
+                </tr>
+                {{else}}
+                <tr>
+                    <td>no data</td>
+                </tr>
+                {{/each}}
+            </table>
+        {{/if}}
     </block>
 </div>
