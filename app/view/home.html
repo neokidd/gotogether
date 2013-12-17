@@ -1,15 +1,21 @@
-user name：
-<input id="userName" type="text"/>
-<button id="generateGroup">生成分享链接</button>
-<input id="shareLink" type="text"/>
-<a href="https://itunes.apple.com/cn/app/id414478124" id="openApp">微信分享</a>
-<button id="goLocation">去定位页面</button>
-<block tpl-id="debugOptions">
-    {{#if debug}}
-        <div id="debugOptions">
+<div id="baseinfo">
+    user name：
+    <input id="userName" type="text"/>
+    目的地：<input id="targetName" type="text"/>
+    <button id="setTarget">设定目的地</button>
+</div>
+<div id="shareinfo">
+    <button id="generateGroup">生成分享链接</button>
+    <input id="shareLink" type="text"/>
+    <a href="https://itunes.apple.com/cn/app/id414478124" id="openApp">微信分享</a>
+    <button id="goLocation">去定位页面</button>
+</div>
+<div id="debugOptions">
+    <block tpl-id="debugOptions">
+        {{#if debug}}
             debug选项：
             <input type="checkbox" id="displayLocData" />显示坐标数据
             <input type="checkbox" id="fakeLoc" />模拟产生坐标
-        </div>
-    {{/if}}
-</block>
+        {{/if}}
+    </block>
+</div>

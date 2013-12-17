@@ -1,5 +1,6 @@
 sumeru.packages(
     'generateId.js',
     'location.js',
-    'mapOverlay.js'
+    'mapOverlay.js',
+    'bMapUtil.js'
 );

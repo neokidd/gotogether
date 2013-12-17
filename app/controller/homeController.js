@@ -24,7 +24,7 @@ App.home = sumeru.controller.create(function(env, session){
     };
 
     env.onrender = function(doRender){
-        doRender("home", ['push','left']);
+        doRender("home", ['push','right']);
     };
 
     env.onready = function(viewRoot){
@@ -34,6 +34,7 @@ App.home = sumeru.controller.create(function(env, session){
         var goLocationBtn = viewRoot.querySelector('#goLocation');
         var goLocationalbe = false;
         var groupId;
+        var targetInput = viewRoot.querySelector('#targetName');
 
         if(userNameInput.value.trim() == '' && localStorage.getItem("userName")) {
             userNameInput.value = String(localStorage.getItem("userName")).trim()
@@ -66,6 +67,10 @@ App.home = sumeru.controller.create(function(env, session){
         });
 
         Library.touch.on("#goLocation","touchend", goLocationPage);
+
+        Library.touch.on("#setTarget","touchend", function(){
+            env.redirect('/target');
+        });
 
         function goLocationPage(){
             if(goLocationalbe) {
