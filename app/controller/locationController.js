@@ -54,7 +54,7 @@ App.location = sumeru.controller.create(function(env, session){
     };
 
     env.onready = function(viewRoot){
-        Library.bMapUtil.initMap(map,viewRoot.querySelector('#map'));
+        map = Library.bMapUtil.initMap(viewRoot.querySelector('#map'));
 
         var usernameInput = viewRoot.querySelector("#usernameInput");
         usernameInput.value = userName;
