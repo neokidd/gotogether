@@ -71,11 +71,7 @@ App.location = sumeru.controller.create(function(env, session){
 
         });
 
-        if(isFakeLoc && usersInfo[userId] && usersInfo[userId].coordinate) {
-            Library.generateLocation.currentLoc = usersInfo[userId].coordinate[usersInfo[userId].coordinate.length - 1];
-        }
-
-        Library.location.genererateLoction(isFakeLoc,locSuccessCallback);
+        Library.location.genererateLoction(map,isFakeLoc,locSuccessCallback);
     };
 
     function initMap(){
@@ -88,9 +84,7 @@ App.location = sumeru.controller.create(function(env, session){
         }
     }
 
-    locSuccessCallback = function(originPosition) {
-
-        var position = Library.location.formatLoction(originPosition);
+    locSuccessCallback = function(position) {
 
         if(!usersInfo[userId]) {
             var newItem = {

@@ -3,16 +3,18 @@
  */
 Library.location = sumeru.Library.create(function(exports){
 
-    exports.genererateLoction = function(isFake,successCallback,errorCallback){
+    exports.genererateLoction = function(map,isFake,successCallback,errorCallback){
         var callBack = {
             error: errorCallback || function(error){
                 console.log('H5 failed ', error);
             },
 
             success : successCallback ||function(position){
-                console.log('H5 success ', position.coords);
+                console.log('H5 success ', position);
             }
         }
+
+        this.map = map;
 
         isFake?fakeGenFunc(callBack):realGenFunc(callBack);
     };
@@ -41,12 +43,13 @@ Library.location = sumeru.Library.create(function(exports){
 
     var realGenFunc = function(callback){
 
-        var timeInterval = 25000;
+        var timeInterval = 15000;
         var positionOptions = {
             enableHighAccuracy:true,
-            maximumAge:20000,
+            maximumAge:14000,
             enableHighAccuracy:true
         }
+        var distanceThreshold = 100;
         var geolocation = new BMap.Geolocation();
 
         var generateNewLoc = function(){
@@ -54,9 +57,19 @@ Library.location = sumeru.Library.create(function(exports){
         }
 
         var locCallback = function(pos){
+            var currentLoc = exports.currentLoc;
             var status = geolocation.getStatus();
             if(BMAP_STATUS_SUCCESS == status){
-                callback.success(pos);
+                var position = exports.formatLoction(pos);
+                var bPoint = new BMap.Point(position.lng,position.lat);
+                if(currentLoc && exports.map.getDistance(currentLoc,bPoint) < distanceThreshold ) {
+                    console.log("Distance is too short to log it!",exports.map.getDistance(currentLoc,bPoint));
+                    return false;
+                } else {
+                    exports.currentLoc = bPoint;
+                    callback.success(position);
+                }
+
             } else {
                 callback.error(status);
             }
@@ -70,16 +83,16 @@ Library.location = sumeru.Library.create(function(exports){
     var fakeGenFunc = function(callback){
 
         var baseLoc = {
-            lat:116.387428,
-            lng:39.90923
+            lng:116.387428,
+            lat:39.90923
         };
 
         var baseStep = 0.05;
         var timeInterval = 5000;
-        var currentLoc = exports.currentLoc;
 
         var generateNewLoc = function(){
             var newLoc = {};
+            var currentLoc = exports.currentLoc;
             if(!currentLoc) {
                 newLoc.lat = baseLoc.lat + adjustValue(1);
                 newLoc.lng = baseLoc.lng + adjustValue(1);
@@ -89,7 +102,7 @@ Library.location = sumeru.Library.create(function(exports){
             }
 
             newLoc.time = new Date().getTime();
-            currentLoc = newLoc;
+            exports.currentLoc = newLoc;
 
             callback.success(newLoc);
 
