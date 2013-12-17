@@ -18,7 +18,7 @@ App.target = sumeru.controller.create(function(env, session){
 
     env.onready = function(viewRoot){
         map = Library.bMapUtil.initMap(viewRoot.querySelector('#map'));
-        Library.bMapUtil.keywordLocation(map,viewRoot.querySelector('#suggestId'));
+        Library.bMapUtil.keywordLocation(map,viewRoot.querySelector('#suggestId'),keyworkLocationCallback);
         var suggestAdressInput = viewRoot.querySelector('#suggestId');
         suggestAdressInput.innerHTML = '';
 
@@ -28,15 +28,24 @@ App.target = sumeru.controller.create(function(env, session){
             });
 
             Library.touch.on('#setself','touchend',function(){
-                Library.bMapUtil.getLocation(locationCallback,null,locationLoadingFunc);
+                Library.bMapUtil.getLocation(locationCallback,locationErrorCallback,locationLoadingFunc);
             });
         });
+
+        function keyworkLocationCallback(bPos,address){
+            var formatPos = Library.location.formatLoction(bPos);
+            localStorage.setItem('targetPos-lat',formatPos.lat);
+            localStorage.setItem('targetPos-lng',formatPos.lng);
+            localStorage.setItem('targetAddress',address);
+            document.querySelector('#targetName').value = address;
+        }
 
         function locationCallback(pos){
             console.log("@@@",pos);
             map.clearOverlays();
             var formatPos = Library.location.formatLoction(pos);
-            localStorage.setItem('targetPos',formatPos);
+            localStorage.setItem('targetPos-lat',formatPos.lat);
+            localStorage.setItem('targetPos-lng',formatPos.lng);
             var bPoint = new BMap.Point(pos.lng,pos.lat);
             Library.location.pointToAddress(bPoint,setAddress);
 
@@ -52,10 +61,15 @@ App.target = sumeru.controller.create(function(env, session){
         function setAddress(addressObj,addressStr){
             suggestAdressInput.value = addressStr;
             localStorage.setItem('targetAddress',addressStr);
+            document.querySelector('#targetName').value = addressStr;
         };
 
         function locationLoadingFunc(){
             suggestAdressInput.value = "正在查询你的位置，请等待...";
+        };
+
+        function locationErrorCallback(status){
+            suggestAdressInput.value = status;
         };
 
     }

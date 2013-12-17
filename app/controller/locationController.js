@@ -21,6 +21,7 @@ App.location = sumeru.controller.create(function(env, session){
     var locSuccessCallback;
     var roleController = Library.mapOverlay.createRoleController();
     var isFakeLoc;
+    var targetId = "target";
 
     var getLocation = function(){
         groupId = session.get('groupId');
@@ -37,6 +38,10 @@ App.location = sumeru.controller.create(function(env, session){
                 data : locationCollection.find(),
                 displayLocData : isDisplayLocData
             });
+
+            if(!usersInfo[targetId]){
+                setTarget();
+            }
 
             if(map) {
                 roleController.updateRolesData(locationCollection.getData());
@@ -96,4 +101,34 @@ App.location = sumeru.controller.create(function(env, session){
         }
         session.location.save();
     }
+
+    //后续添加server验证
+    var setTarget = function(){
+        if(groupId && Library.generateId.isAdministrator(groupId)) {
+            var position = {
+                lat:localStorage.getItem('targetPos-lat'),
+                lng:localStorage.getItem('targetPos-lng')
+            };
+
+            var targetName = '目的地' + localStorage.getItem('targetAddress');
+
+            if(!usersInfo[targetId]) {
+                var newItem = {
+                    'userId':targetId,
+                    'groupId':groupId,
+                    'coordinate':[position],
+                    'name':targetName
+                };
+
+                session.location.add(newItem);
+            } else {
+                usersInfo[userId].coordinate = [position];
+
+                session.location.update({'name':targetName},{'groupId':groupId,'userId':targetId});
+            }
+            session.location.save();
+        }
+    }
+
+
 });

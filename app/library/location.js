@@ -33,11 +33,13 @@ Library.location = sumeru.Library.create(function(exports){
             };
 
         } else {
-            formatPot = originPoint;
+            formatPot = {
+                lat:originPoint.lat,
+                lng:originPoint.lng
+            };
         }
 
         return formatPot;
-
     };
 
 

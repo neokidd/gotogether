@@ -13,7 +13,7 @@ Library.bMapUtil = sumeru.Library.create(function(exports){
         return map;
     };
 
-    exports.keywordLocation = function(map,suggestText){
+    exports.keywordLocation = function(map,suggestText,callback){
         var ac = new BMap.Autocomplete( {
                 "input" : suggestText,
                 "location" : map
@@ -34,6 +34,7 @@ Library.bMapUtil = sumeru.Library.create(function(exports){
                 var pp = local.getResults().getPoi(0).point;    //获取第一个智能搜索的结果
                 map.centerAndZoom(pp, 18);
                 map.addOverlay(new BMap.Marker(pp));    //添加标注
+                callback(pp,myValue);
             }
             var local = new BMap.LocalSearch(map, { //智能搜索
                 onSearchComplete: myFun
@@ -56,7 +57,7 @@ Library.bMapUtil = sumeru.Library.create(function(exports){
 
         errorCallback || (errorCallback = defaultCallback);
 
-        geolocation.getCurrentPosition(locCallback,defaultPositionOptions);
+        geolocation.getCurrentPosition(locCallback);
         loadingFunc && loadingFunc();
 
         var locCallback = function(pos){

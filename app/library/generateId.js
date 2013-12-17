@@ -26,5 +26,11 @@ Library.generateId = sumeru.Library.create(function(exports){
         return this.groupId;
     };
 
+    exports.isAdministrator = function(groupId){
+        var arr = groupId.split('_');
+        arr.pop();
+        return this.getUserId() === arr.join('_');
+    }
+
     return exports;
 });
