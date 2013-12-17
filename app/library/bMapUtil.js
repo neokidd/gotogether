@@ -3,54 +3,27 @@
  */
 
 Library.bMapUtil = sumeru.Library.create(function(exports){
-    exports.initMap = function(map,mapElement){
-        if(!map) {
-            map = new BMap.Map(mapElement);            // 创建Map实例
-            var point = new BMap.Point(116.404, 39.915);    // 创建点坐标
-            map.centerAndZoom(point,15);                     // 初始化地图,设置中心点坐标和地图级别。
-            map.enableScrollWheelZoom();                            //启用滚轮放大缩小
-            map.addControl(new BMap.NavigationControl());
-        }
+    exports.initMap = function(mapElement){
+        var map = new BMap.Map(mapElement);            // 创建Map实例
+        var point = new BMap.Point(116.404, 39.915);    // 创建点坐标
+        map.centerAndZoom(point,15);                     // 初始化地图,设置中心点坐标和地图级别。
+        map.enableScrollWheelZoom();                            //启用滚轮放大缩小
+        map.addControl(new BMap.NavigationControl());
 
         return map;
     };
 
-    exports.keywordLocation = function(map,inputText,resultPanel){
-        function G(id) {
-            return document.getElementById(id);
-        }
-
-        var map = new BMap.Map("l-map");
-        map.centerAndZoom("北京",12);                   // 初始化地图,设置城市和地图级别。
-
-        var ac = new BMap.Autocomplete(    //建立一个自动完成的对象
-            {"input" : "suggestId"
-                ,"location" : map
+    exports.keywordLocation = function(map,suggestText){
+        var ac = new BMap.Autocomplete( {
+                "input" : suggestText,
+                "location" : map
             });
 
-        ac.addEventListener("onhighlight", function(e) {  //鼠标放在下拉列表上的事件
-            var str = "";
-            var _value = e.fromitem.value;
-            var value = "";
-            if (e.fromitem.index > -1) {
-                value = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
-            }
-            str = "FromItem<br />index = " + e.fromitem.index + "<br />value = " + value;
-
-            value = "";
-            if (e.toitem.index > -1) {
-                _value = e.toitem.value;
-                value = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
-            }
-            str += "<br />ToItem<br />index = " + e.toitem.index + "<br />value = " + value;
-            G("searchResultPanel").innerHTML = str;
-        });
-
         var myValue;
+
         ac.addEventListener("onconfirm", function(e) {    //鼠标点击下拉列表后的事件
             var _value = e.item.value;
             myValue = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
-            G("searchResultPanel").innerHTML ="onconfirm<br />index = " + e.item.index + "<br />myValue = " + myValue;
 
             setPlace();
         });
@@ -67,6 +40,39 @@ Library.bMapUtil = sumeru.Library.create(function(exports){
             });
             local.search(myValue);
         }
+    };
+
+    exports.getLocation = function(succCallback,errorCallback,loadingFunc){
+        var geolocation = new BMap.Geolocation();
+
+        var defaultPositionOptions = {
+            enableHighAccuracy:true,
+            maximumAge:15000
+        }
+
+        var defaultCallback = function(error){
+            console.log('H5 failed ',error);
+        };
+
+        errorCallback || (errorCallback = defaultCallback);
+
+        geolocation.getCurrentPosition(locCallback,defaultPositionOptions);
+        loadingFunc && loadingFunc();
+
+        var locCallback = function(pos){
+            var status = geolocation.getStatus();
+            BMAP_STATUS_SUCCESS == status ? succCallback(pos):errorCallback(status);
+        }
+
+    };
+
+    exports.pointToAddress = function(pt,callback){
+        var gc = new BMap.Geocoder();
+        gc.getLocation(pt, function(rs){
+            var addComp = rs.addressComponents;
+            var address = addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber;
+            callback(addCompOriObj,addressStr);
+        });
     }
 
     return exports;

@@ -46,8 +46,7 @@ Library.location = sumeru.Library.create(function(exports){
         var timeInterval = 15000;
         var positionOptions = {
             enableHighAccuracy:true,
-            maximumAge:14000,
-            enableHighAccuracy:true
+            maximumAge:14000
         }
         var distanceThreshold = 100;
         var geolocation = new BMap.Geolocation();

@@ -52,8 +52,8 @@ Library.mapOverlay = sumeru.Library.create(function(exports){
 
                 var currentPoint = allBMapPoint[allBMapPoint.length - 1];
                 markergps = new BMap.Marker(currentPoint);
-                bm.addOverlay(markergps); //添加GPS标注
-                markergps.setLabel(labelgps); //添加GPS标注
+                bm.addOverlay(markergps); //添加标注
+                markergps.setLabel(labelgps); //添加标注
                 if(isSelf()) {
                     bm.panTo(currentPoint);
                 }
