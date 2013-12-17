@@ -17,10 +17,12 @@ App.target = sumeru.controller.create(function(env, session){
     };
 
     env.onready = function(viewRoot){
-//        Library.bMapUtil.initMap(map,viewRoot.querySelector('#map'));
+        Library.bMapUtil.initMap(map,viewRoot.querySelector('#map'));
 
-        Library.touch.on('#goHome','touchend',function(){
-            env.redirect("/home");
+        session.event('inputTarget',function(){
+            Library.touch.on('#goHome','touchend',function(){
+                env.redirect("/home");
+            });
         });
 
     }

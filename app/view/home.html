@@ -1,8 +1,10 @@
 <div id="baseinfo">
-    user name：
-    <input id="userName" type="text"/>
-    目的地：<input id="targetName" type="text"/>
-    <button id="setTarget">设定目的地</button>
+    <block tpl-id="setTarget">
+        user name：
+        <input id="userName" type="text"/>
+        目的地：<input id="targetName" type="text"/>
+        <button id="setTarget">设定目的地</button>
+    </block>
 </div>
 <div id="shareinfo">
     <button id="generateGroup">生成分享链接</button>

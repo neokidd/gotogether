@@ -68,8 +68,10 @@ App.home = sumeru.controller.create(function(env, session){
 
         Library.touch.on("#goLocation","touchend", goLocationPage);
 
-        Library.touch.on("#setTarget","touchend", function(){
-            env.redirect('/target');
+        session.event('setTarget',function(){
+            Library.touch.on("#setTarget","touchend", function(){
+                env.redirect('/target');
+            });
         });
 
         function goLocationPage(){

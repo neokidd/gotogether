@@ -1,7 +1,12 @@
 <div id="setTarget">
-    <button id="setself">设定当前位置为目的地</button>
-    目的地：
-    <input id="targetInput" type="text"/>
-    <button id="goHome">返回主页</button>
+    <block tpl-id="inputTarget">
+        <button id="setself">设定当前位置为目的地</button>
+        <div id="r-result">
+            目的地:
+            <input type="text" id="suggestId" size="20" style="width:150px;" />
+        </div>
+        <div id="searchResultPanel" style="border:1px solid #C0C0C0;width:150px;height:auto;" />
+
+    </block>
 </div>
 <div id="map"></div>
