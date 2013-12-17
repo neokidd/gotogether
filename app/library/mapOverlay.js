@@ -17,7 +17,11 @@ Library.mapOverlay = sumeru.Library.create(function(exports){
                 return me.dataSource.userId === Library.generateId.getUserId();
             }
 
-            var markergps;
+            var isTarget = function(){
+                return me.dataSource.userId === "target";
+            }
+
+            var marker;
             var polyline;
 
             var labelgps = new BMap.Label(getUserIdentity(),{offset:new BMap.Size(20,-10)});
@@ -51,9 +55,12 @@ Library.mapOverlay = sumeru.Library.create(function(exports){
                 bm.addOverlay(polyline);
 
                 var currentPoint = allBMapPoint[allBMapPoint.length - 1];
-                markergps = new BMap.Marker(currentPoint);
-                bm.addOverlay(markergps); //添加标注
-                markergps.setLabel(labelgps); //添加标注
+                marker = new BMap.Marker(currentPoint);
+                bm.addOverlay(marker); //添加标注
+                marker.setLabel(labelgps); //添加标注
+                if(isTarget()) {
+                    marker.setAnimation(BMAP_ANIMATION_BOUNCE)
+                }
                 if(isSelf()) {
                     bm.panTo(currentPoint);
                 }
@@ -61,7 +68,7 @@ Library.mapOverlay = sumeru.Library.create(function(exports){
             }
 
             this.clear = function(){
-                bm.removeOverlay(markergps);
+                bm.removeOverlay(marker);
                 bm.removeOverlay(polyline);
 
             }

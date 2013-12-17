@@ -110,7 +110,7 @@ App.location = sumeru.controller.create(function(env, session){
                 lng:localStorage.getItem('targetPos-lng')
             };
 
-            var targetName = '目的地' + localStorage.getItem('targetAddress');
+            var targetName = '目的地:' + localStorage.getItem('targetAddress');
 
             if(!usersInfo[targetId]) {
                 var newItem = {
