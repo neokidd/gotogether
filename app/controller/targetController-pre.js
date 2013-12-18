@@ -20,45 +20,49 @@ App.target = sumeru.controller.create(function(env, session){
         map = Library.bMapUtil.initMap(viewRoot.querySelector('#map'));
         Library.bMapUtil.keywordLocation(map,viewRoot.querySelector('#suggestId'),keyworkLocationCallback);
         var suggestAdressInput = viewRoot.querySelector('#suggestId');
-        var goOnBtn = viewRoot.querySelector("#goOn");
-        goOnBtn.disabled = true;
+       // suggestAdressInput.innerHTML = '';
 
-        Library.touch.on('#goOn','touchend',function(){
-            env.redirect('/location');
+        session.event('inputTarget',function(){
+            Library.touch.on('#goBack','touchend',function(){
+                var routeAction = session.get('prePage');
+                env.redirect(routeAction);
+            });
+
+            Library.touch.on('#setself','touchend',function(){
+                Library.bMapUtil.getLocation(locationCallback,locationErrorCallback,locationLoadingFunc);
+            });
+
+            Library.touch.on('#setDestination','touchend',function(){
+                document.getElementById('selectDestinationMethod').style.display = "block";
+            });
+
+            Library.touch.on('#setAddressFormLBS','touchend',function(){
+                //从地图获取目的地
+            });
+
+            Library.touch.on('#inputAddress','touchend',function(){
+                //获取输入目的地的值
+                // var inputAddress = prompt("请输入目的地：","");
+                document.getElementById('selectDestinationMethod').style.display = "none";
+
+                document.getElementById('r-result').style.display = "block";
+
+            });
+
+            Library.touch.on('#cancelOption','touchend',function(){
+                document.getElementById('selectDestinationMethod').style.display = "none";
+            });
+
+
+
         });
-
-        Library.touch.on('#setself','touchend',function(){
-            Library.bMapUtil.getLocation(locationCallback,locationErrorCallback,locationLoadingFunc);
-        });
-
-        Library.touch.on('#setDestination','touchend',function(){
-            document.getElementById('selectDestinationMethod').style.display = "block";
-        });
-
-        Library.touch.on('#setAddressFormLBS','touchend',function(){
-            //从地图获取目的地
-        });
-
-        Library.touch.on('#inputAddress','touchend',function(){
-            //获取输入目的地的值
-            document.getElementById('selectDestinationMethod').style.display = "none";
-
-            document.getElementById('r-result').style.display = "block";
-
-        });
-
-        Library.touch.on('#cancelOption','touchend',function(){
-            document.getElementById('selectDestinationMethod').style.display = "none";
-        });
-
 
         function keyworkLocationCallback(bPos,address){
             var formatPos = Library.location.formatLoction(bPos);
             sessionStorage.setItem('targetPos-lat',formatPos.lat);
             sessionStorage.setItem('targetPos-lng',formatPos.lng);
             sessionStorage.setItem('targetAddress',address);
-
-            finishSetAddress();
+            document.querySelector('#targetName').value = address;
         }
 
         function locationCallback(pos){
@@ -81,13 +85,7 @@ App.target = sumeru.controller.create(function(env, session){
             if(session.get('prePage') == '/location') {
                 sessionStorage.setItem('updateTargetFlag',1);
             }
-
-            finishSetAddress();
         };
-
-        function finishSetAddress(){
-            goOnBtn.disabled = false;
-        }
 
         function setAddress(addressObj,addressStr){
             suggestAdressInput.value = addressStr;
