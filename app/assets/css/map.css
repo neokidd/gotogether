@@ -184,3 +184,12 @@ input{
 
 }
 
+/*test*/
+#setting {
+    position:absolute;
+    bottom: 0px;
+    z-index:70130;
+    display:none;
+    width: 100%;
+    background-color:#eeeeee;
+}

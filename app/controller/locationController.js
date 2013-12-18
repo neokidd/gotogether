@@ -12,22 +12,32 @@ sumeru.router.add(
 App.location = sumeru.controller.create(function(env, session){
 
     var fetchOptions = {};
-    var groupId;
+
     var userId = Library.generateId.getUserId();
     var usersInfo = {};
     var historyLocMaxLen = 10;
     var userName = localStorage.getItem('userName') || '';
+    var groupId;
+
     var map;
-    var locSuccessCallback;
     var roleController = Library.mapOverlay.createRoleController();
-    var isFakeLoc;
+
     var targetId = "target";
 
+    var locSuccessCallback;
+    var isFakeLoc;
+
     var getLocation = function(){
+
         groupId = session.get('groupId');
+
+        if(!groupId) {
+            return;
+        }
+
         fetchOptions.groupId = groupId;
         var isDisplayLocData = "true" == session.get('displayLocData');
-        isFakeLoc = "true" == session.get('fakeLoc');
+        isFakeLoc = true;//"true" == session.get('fakeLoc');
 
         session.location = env.subscribe('pubLocation', fetchOptions,function(locationCollection){
             locationCollection.getData().forEach(function(item){
@@ -39,7 +49,7 @@ App.location = sumeru.controller.create(function(env, session){
                 displayLocData : isDisplayLocData
             });
 
-            session.bind('goTargetBlock', {
+            session.bind('settingBlock', {
                 isAdmin: Library.generateId.isAdministrator(groupId)
             });
 
@@ -65,23 +75,17 @@ App.location = sumeru.controller.create(function(env, session){
     env.onready = function(viewRoot){
         map = Library.bMapUtil.initMap(viewRoot.querySelector('#map'));
 
-        Library.touch.on("#back","touchend",function(){
-            env.redirect('/home');
-        });
-
-
         var usernameInput = viewRoot.querySelector("#usernameInput");
         usernameInput.value = userName;
 
-        var addressInput = viewRoot.querySelector("#locationTargetAddress");
-        targetAdress = sessionStorage.getItem('targetAddress');
-        targetAdress && (addressInput.value = targetAdress);
+        Library.touch.on('#modify_address',"touchend",function(){
+            viewRoot.querySelector('#setting').style.display = "block";
 
-        session.event('goTargetBlock',function(){
-            Library.touch.on('#goTarget',"touchend",function(){
-                env.redirect('/target',{prePage:'/location'});
+        });
 
-            });
+        Library.touch.on('#settingClose',"touchend",function(){
+            viewRoot.querySelector('#setting').style.display = "none";
+
         });
 
         Library.touch.on("#setUsername","touchend",function(){
@@ -93,10 +97,18 @@ App.location = sumeru.controller.create(function(env, session){
 
             userName = userNameTemp;
             localStorage.setItem('userName',userName);
+            viewRoot.querySelector('#setting').style.display = "none";
+            session.set('groupId',Library.generateId.getGroupId());
+            session.commit();
 
         });
 
-        Library.location.genererateLoction(map,isFakeLoc,locSuccessCallback);
+        var timeInt= setInterval(function(){
+            if(groupId) {
+                clearInterval(timeInt);
+                Library.location.genererateLoction(map,isFakeLoc,locSuccessCallback);
+            }
+        },100);
     };
 
     locSuccessCallback = function(position) {
@@ -132,25 +144,29 @@ App.location = sumeru.controller.create(function(env, session){
                 lng:sessionStorage.getItem('targetPos-lng')
             };
 
-            var targetName = '目的地:' + sessionStorage.getItem('targetAddress');
-
-            if(!usersInfo[targetId]) {
-                var newItem = {
-                    'userId':targetId,
-                    'groupId':groupId,
-                    'coordinate':[position],
-                    'name':targetName
-                };
-
-                session.location.add(newItem);
+            if(!sessionStorage.getItem('targetPos-lat')) {
+                alert("终点数据不可用，请重新设置终点！");
+                env.redirect('/target');
             } else {
-                usersInfo[userId].coordinate = [position];
+                var targetName = '目的地:' + sessionStorage.getItem('targetAddress');
 
-                session.location.update({'name':targetName},{'groupId':groupId,'userId':targetId});
+                if(!usersInfo[targetId]) {
+                    var newItem = {
+                        'userId':targetId,
+                        'groupId':groupId,
+                        'coordinate':[position],
+                        'name':targetName
+                    };
+
+                    session.location.add(newItem);
+                } else {
+                    usersInfo[userId].coordinate = [position];
+
+                    session.location.update({'name':targetName},{'groupId':groupId,'userId':targetId});
+                }
+                session.location.save();
             }
-            session.location.save();
         }
     }
-
 
 });
