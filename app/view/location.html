@@ -1,7 +1,17 @@
 <div id="map"></div>
 <div id="username">
+    用户名：
     <input id="usernameInput" type="text"/>
     <button id="setUsername">确定</button>
+</div>
+<div id="updateTarget">
+    <block tpl-id="goTargetBlock">
+        终点：
+        <input id="locationTargetAddress" type="text"/>
+        {{#if isAdmin}}
+            <button id="goTarget">重新设置终点</button>
+        {{/if}}
+    </block>
 </div>
 <div>
     <block tpl-id="locationLogBlock">

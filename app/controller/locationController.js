@@ -39,7 +39,11 @@ App.location = sumeru.controller.create(function(env, session){
                 displayLocData : isDisplayLocData
             });
 
-            if(!usersInfo[targetId]){
+            session.bind('goTargetBlock', {
+                isAdmin: Library.generateId.isAdministrator(groupId)
+            });
+
+            if(!usersInfo[targetId] || sessionStorage.getItem('updateTargetFlag')){
                 setTarget();
             }
 
@@ -63,6 +67,17 @@ App.location = sumeru.controller.create(function(env, session){
 
         var usernameInput = viewRoot.querySelector("#usernameInput");
         usernameInput.value = userName;
+
+        var addressInput = viewRoot.querySelector("#locationTargetAddress");
+        targetAdress = sessionStorage.getItem('targetAddress');
+        targetAdress && (addressInput.value = targetAdress);
+
+        session.event('goTargetBlock',function(){
+            Library.touch.on('#goTarget',"touchend",function(){
+                env.redirect('/target',{prePage:'/location'});
+
+            });
+        });
 
         Library.touch.on("#setUsername","touchend",function(){
             var userNameTemp = usernameInput.value.trim();
@@ -104,13 +119,15 @@ App.location = sumeru.controller.create(function(env, session){
 
     //后续添加server验证
     var setTarget = function(){
+        sessionStorage.setItem('updateTargetFlag','');
+
         if(groupId && Library.generateId.isAdministrator(groupId)) {
             var position = {
-                lat:localStorage.getItem('targetPos-lat'),
-                lng:localStorage.getItem('targetPos-lng')
+                lat:sessionStorage.getItem('targetPos-lat'),
+                lng:sessionStorage.getItem('targetPos-lng')
             };
 
-            var targetName = '目的地:' + localStorage.getItem('targetAddress');
+            var targetName = '目的地:' + sessionStorage.getItem('targetAddress');
 
             if(!usersInfo[targetId]) {
                 var newItem = {

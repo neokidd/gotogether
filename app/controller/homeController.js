@@ -35,7 +35,7 @@ App.home = sumeru.controller.create(function(env, session){
         var goLocationalbe = false;
         var groupId;
         var targetInput = viewRoot.querySelector('#targetName');
-        targetInput.value = localStorage.getItem('targetAddress');
+        targetInput.value = sessionStorage.getItem('targetAddress');
 
         if(userNameInput.value.trim() == '' && localStorage.getItem("userName")) {
             userNameInput.value = String(localStorage.getItem("userName")).trim()
@@ -76,7 +76,7 @@ App.home = sumeru.controller.create(function(env, session){
 
         session.event('setTarget',function(){
             Library.touch.on("#setTarget","touchend", function(){
-                env.redirect('/target');
+                env.redirect('/target',{prePage:'/home'});
             });
         });
 

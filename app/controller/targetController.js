@@ -23,8 +23,9 @@ App.target = sumeru.controller.create(function(env, session){
         suggestAdressInput.innerHTML = '';
 
         session.event('inputTarget',function(){
-            Library.touch.on('#goHome','touchend',function(){
-                env.redirect("/home");
+            Library.touch.on('#goBack','touchend',function(){
+                var routeAction = session.get('prePage');
+                env.redirect(routeAction);
             });
 
             Library.touch.on('#setself','touchend',function(){
@@ -34,9 +35,9 @@ App.target = sumeru.controller.create(function(env, session){
 
         function keyworkLocationCallback(bPos,address){
             var formatPos = Library.location.formatLoction(bPos);
-            localStorage.setItem('targetPos-lat',formatPos.lat);
-            localStorage.setItem('targetPos-lng',formatPos.lng);
-            localStorage.setItem('targetAddress',address);
+            sessionStorage.setItem('targetPos-lat',formatPos.lat);
+            sessionStorage.setItem('targetPos-lng',formatPos.lng);
+            sessionStorage.setItem('targetAddress',address);
             document.querySelector('#targetName').value = address;
         }
 
@@ -44,8 +45,8 @@ App.target = sumeru.controller.create(function(env, session){
             console.log("@@@",pos);
             map.clearOverlays();
             var formatPos = Library.location.formatLoction(pos);
-            localStorage.setItem('targetPos-lat',formatPos.lat);
-            localStorage.setItem('targetPos-lng',formatPos.lng);
+            sessionStorage.setItem('targetPos-lat',formatPos.lat);
+            sessionStorage.setItem('targetPos-lng',formatPos.lng);
             var bPoint = new BMap.Point(pos.lng,pos.lat);
             Library.location.pointToAddress(bPoint,setAddress);
 
@@ -56,13 +57,29 @@ App.target = sumeru.controller.create(function(env, session){
             markergps.setLabel(labelgps);
 
             map.panTo(bPoint);
+
+            if(session.get('prePage') == '/location') {
+                sessionStorage.setItem('updateTargetFlag',1);
+            }
         };
 
         function setAddress(addressObj,addressStr){
             suggestAdressInput.value = addressStr;
-            localStorage.setItem('targetAddress',addressStr);
-            document.querySelector('#targetName').value = addressStr;
+            sessionStorage.setItem('targetAddress',addressStr);
+
+            updateAllTargetInput(addressStr);
         };
+
+        function updateAllTargetInput(addressStr){
+            var addressPool = [];
+            addressPool.push(document.querySelector('#targetName'));
+            addressPool.push(document.querySelector('#locationTargetAddress'));
+            addressPool.forEach(function(item){
+                if(item && item.value) {
+                    item.value = addressStr;
+                }
+            });
+        }
 
         function locationLoadingFunc(){
             suggestAdressInput.value = "正在查询你的位置，请等待...";
