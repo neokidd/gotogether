@@ -20,7 +20,7 @@ App.target = sumeru.controller.create(function(env, session){
         map = Library.bMapUtil.initMap(viewRoot.querySelector('#map'));
         Library.bMapUtil.keywordLocation(map,viewRoot.querySelector('#suggestId'),keyworkLocationCallback);
         var suggestAdressInput = viewRoot.querySelector('#suggestId');
-        suggestAdressInput.innerHTML = '';
+       // suggestAdressInput.innerHTML = '';
 
         session.event('inputTarget',function(){
             Library.touch.on('#goHome','touchend',function(){
@@ -30,6 +30,26 @@ App.target = sumeru.controller.create(function(env, session){
             Library.touch.on('#setself','touchend',function(){
                 Library.bMapUtil.getLocation(locationCallback,locationErrorCallback,locationLoadingFunc);
             });
+
+            Library.touch.on('#setDestination','touchend',function(){
+                document.getElementById('selectDestinationMethod').style.display = "block";
+            });
+
+            Library.touch.on('#setAddressFormLBS','touchend',function(){
+                //从地图获取目的地
+            });
+
+            Library.touch.on('#inputAddress','touchend',function(){
+                //获取输入目的地的值
+                // var inputAddress = prompt("请输入目的地：","");
+            });
+
+            Library.touch.on('#cancelOption','touchend',function(){
+                document.getElementById('selectDestinationMethod').style.display = "none";
+            });
+
+
+
         });
 
         function keyworkLocationCallback(bPos,address){
