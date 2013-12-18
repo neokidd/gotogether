@@ -1,0 +1,50 @@
+<div id="location_container">
+    <div id="topBar">
+        <button id="back">返回</button>
+        <span>聚点</span>
+        <button id="modify_address">修改</button>         
+    </div>
+    <div id="map"></div>
+    <div id="username">
+        <input id="usernameInput" type="text"/>
+        <button id="setUsername">确定</button>
+    </div>
+    <div>
+        <block tpl-id="locationLogBlock">
+            {{#if displayLocData}}
+                <table class="listContent" rules="all" frame="box">
+                    <tr>
+                        <th>GroupId</th>
+                        <th>Name</th>
+                        <th>UserId</th>
+                        <th>location</th>
+                    </tr>
+                    {{#each data}}
+                    <tr>
+                        <td>{{this.groupId}}</td>
+                        <td>{{this.name}}</td>
+                        <td>{{this.userId}}</td>
+                        <td>
+                            <table rules="all">
+                                {{#each this.coordinate}}
+                                    <tr>
+                                        <td>{{this.lat}}</td>
+                                        <td>{{this.lng}}</td>
+                                        {{#if this.time}}
+                                            <td>{{this.time}}</td>
+                                        {{/if}}
+                                    </tr>
+                                {{/each}}
+                            </table>
+                        </td>
+                    </tr>
+                    {{else}}
+                    <tr>
+                        <td>no data</td>
+                    </tr>
+                    {{/each}}
+                </table>
+            {{/if}}
+        </block>
+    </div>
+</div>
