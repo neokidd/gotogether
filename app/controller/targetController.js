@@ -42,6 +42,10 @@ App.target = sumeru.controller.create(function(env, session){
             Library.touch.on('#inputAddress','touchend',function(){
                 //获取输入目的地的值
                 // var inputAddress = prompt("请输入目的地：","");
+                document.getElementById('selectDestinationMethod').style.display = "none";
+
+                document.getElementById('r-result').style.display = "block";
+
             });
 
             Library.touch.on('#cancelOption','touchend',function(){

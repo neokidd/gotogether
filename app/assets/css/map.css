@@ -144,6 +144,16 @@ input{
     background-color:#eeeeee;
 }
 
+#r-result{
+	position:absolute; 
+    top: 44px;
+    z-index:80130; 
+    display:none;
+    width: 60%;
+    margin-left: 20%;
+    background-color:#eeeeee;	
+}
+
 #selectDestinationMethod button{
 	width: 90%;
 	height: 40px;
