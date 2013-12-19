@@ -30,7 +30,7 @@
 
 
 #topBar span{
-	font-size: 17px;
+	font-size: 14px;
 	font-weight: normal;
 	text-align: center;
 	color: #fff;
@@ -48,18 +48,28 @@
 	text-align: center;
 	/*color: #323232;*/
 	color:#fff;
-	border: 1px solid #6688D6;
-	background-color: #3268F1;
+	/*border: 1px solid #6688D6;
+	background-color: #3268F1;*/
+
+	-webkit-appearance: none;
+	background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#357ae8),color-stop(50%,#3b85ff),color-stop(100%,#357ae8));
+	background: -webkit-linear-gradient(top,#357ae8 0,#3b85ff 50%,#357ae8 100%);
+	background: -moz-linear-gradient(top,#357ae8 0,#3b85ff 50%,#357ae8 100%);
+	background: -ms-linear-gradient(top,#357ae8 0,#3b85ff 50%,#357ae8 100%);
+	background: -o-linear-gradient(top,#357ae8 0,#3b85ff 50%,#357ae8 100%);
+	background: linear-gradient(to bottom,#357ae8 0,#3b85ff 50%,#357ae8 100%);
 }
 
-#top_setting,#setDestination{
+#top_setting,#setDestination{ 
 	float:left;
-	margin-left:10px;
+	margin-left:20px;
+	cursor: pointer;
 }
 
 #invitation,#goOn{
 	float:right;
-	margin-right: 10px;
+	margin-right: 20px;
+	cursor: pointer;
 }
 
 
@@ -78,6 +88,10 @@
 	height: 100%;
 	overflow: hidden;
 	margin:0;
+}
+
+#topBar .app_name{
+	font-size: 19px;
 }
 
 
@@ -99,7 +113,7 @@ input{
 #home_container button{
 	width: 90%;
     border: solid 1px #2f5bb7;
-	border-radius: 2px;
+	border-radius: 9px;
 	padding: 2px 6px 3px;
 	-webkit-appearance: none;
 	background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#357ae8),color-stop(50%,#3b85ff),color-stop(100%,#357ae8));
@@ -142,11 +156,28 @@ input{
     background-color:#eeeeee;	
 }
 
-#selectDestinationMethod button,#setting button,#invitation_flow button{
+#inputNameFlow{
+	position:absolute; 
+	top:50%;
+	left: 50%;
+    z-index:100130; 
+    display:block;
+    width: 256px;
+    height: 128px;
+    margin-top: -100px;
+    margin-left: -128px;
+    background-color:#eeeeee;
+}
+
+#inputNameFlow input{
+	width: 60%;
+}
+
+#selectDestinationMethod button,#setting button,#invitation_flow button,#inputNameFlow button{
 	width: 90%;
 	height: 40px;
     border: solid 1px #2f5bb7;
-	border-radius: 2px;
+	border-radius: 9px;
 	line-height: 40px;
 	margin-top: 10px;
 	padding: 2px 6px 3px;

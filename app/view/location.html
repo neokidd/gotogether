@@ -1,10 +1,17 @@
 <div id="location_container">
     <div id="topBar">
-        <button id="top_setting">设置</button>
-        <span>聚点</span>
-        <button id="invitation">邀请</button>         
+        <span id="top_setting">设置</span>
+        <span class="app_name">聚点</span>
+        <span id="invitation">邀请</span>         
     </div>
     <div id="map"></div>
+    
+    <!-- 当用户没有输入名字时弹出 -->
+    <div id="inputNameFlow">
+        名字：
+        <input id="username" type="text"/>
+        <button id="setUsernameBtn">确定</button>
+    </div>
 
     <div id="setting">
         <block tpl-id="settingBlock">

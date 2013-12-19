@@ -18,6 +18,10 @@ App.home = sumeru.controller.create(function(env, session){
 
     env.onready = function(viewRoot){
 
+        var status = sumeru.reachability.getStatus();
+
+        console.log("network_status:"+status);
+
         session.event('setTarget',function(){
             Library.touch.on("#setTarget","touchend", function(){
                 env.redirect('/target');
