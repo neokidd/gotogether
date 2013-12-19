@@ -76,19 +76,49 @@ App.location = sumeru.controller.create(function(env, session){
         map = Library.bMapUtil.initMap(viewRoot.querySelector('#map'));
 
         var usernameInput = viewRoot.querySelector("#usernameInput");
-        usernameInput.value = userName;
+        var usernameFirst = viewRoot.querySelector("#username");
 
-        Library.touch.on('#top_setting',"touchend",settingPanelToggle);
+        if(userName) {
+            $("#inputNameFlow").hide();
+        }
 
+        Library.touch.on('#setUsernameBtn','touchend',function(){
+            var userNameTemp = usernameFirst.value.trim();
+            if(setUserName(userNameTemp)) {
+                $("#inputNameFlow").hide();
+
+                if(!groupId) {
+                    session.set('groupId',Library.generateId.getGroupId());
+                    session.commit();
+                }
+            }
+        });
+
+        Library.touch.on("#setUsername","touchend",function(){
+            var userNameTemp = usernameInput.value.trim();
+            if(setUserName(userNameTemp)) {
+                $("#setting").hide();
+            }
+        });
+
+        Library.touch.on("#goTarget","touchend",function(){
+
+        });
 
         Library.touch.on('#settingClose',"touchend",function(){
             if(userName) {
                 $('#setting').hide();
-            } else {
-                alert('input your name firstly');
             }
+        });
 
 
+        Library.touch.on('#top_setting',"touchend",function (){
+            if(userName) {
+                $('#setting').toggle();
+                $('#invitation_flow').hide();
+
+                usernameInput.value = userName;
+            }
         });
 
         Library.touch.on('#invitation',"touchend",function(){
@@ -119,22 +149,17 @@ App.location = sumeru.controller.create(function(env, session){
 
         });
 
-        Library.touch.on("#setUsername","touchend",function(){
-            var userNameTemp = usernameInput.value.trim();
-            if('' == userNameTemp){
+        function setUserName(userNameVal){
+            if('' == userNameVal){
                 alert('input your name firstly');
                 return false;
             }
 
-            userName = userNameTemp;
+            userName = userNameVal;
             localStorage.setItem('userName',userName);
-            viewRoot.querySelector('#setting').style.display = "none";
+            return true;
+        }
 
-            if(!groupId || Library.generateId.isAdministrator(groupId)) {
-                session.set('groupId',Library.generateId.getGroupId());
-                session.commit();
-            }
-        });
 
         var timeInt= setInterval(function(){
             if(groupId) {
@@ -143,18 +168,6 @@ App.location = sumeru.controller.create(function(env, session){
             }
         },100);
 
-        if(!userName) {
-            alert("先输入用户名");
-            $('#setting').show();
-        }
-
-
-        function settingPanelToggle(){
-            if(userName) {
-                $('#setting').toggle();
-                $('#invitation_flow').hide();
-            }
-        }
     };
 
     locSuccessCallback = function(position) {
