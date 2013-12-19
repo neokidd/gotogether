@@ -1,5 +1,9 @@
 CACHE MANIFEST 
+<<<<<<< HEAD
 #version:1387446745885
+=======
+#version:1387439512206
+>>>>>>> af48521eedcb45a480d6ccb467f9f7c0417f45b5
 CACHE:
 sumeru.css
 sumeru.js

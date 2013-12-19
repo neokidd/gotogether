@@ -31,7 +31,7 @@ App.location = sumeru.controller.create(function(env, session){
 
         groupId = session.get('groupId');
 
-        if(!groupId) {
+        if(!groupId || !userName) {
             return;
         }
 
@@ -78,19 +78,24 @@ App.location = sumeru.controller.create(function(env, session){
         var usernameInput = viewRoot.querySelector("#usernameInput");
         usernameInput.value = userName;
 
-        Library.touch.on('#top_setting',"touchend",function(){
-            viewRoot.querySelector('#setting').style.display = "block";
-
-        });
+        Library.touch.on('#top_setting',"touchend",settingPanelToggle);
 
 
         Library.touch.on('#settingClose',"touchend",function(){
-            viewRoot.querySelector('#setting').style.display = "none";
+            if(userName) {
+                $('#setting').hide();
+            } else {
+                alert('input your name firstly');
+            }
+
 
         });
 
         Library.touch.on('#invitation',"touchend",function(){
-            viewRoot.querySelector('#invitation_flow').style.display = "block";
+            if(userName) {
+                $('#invitation_flow').toggle();
+                $('#setting').hide();
+            }
 
         });
 
@@ -124,9 +129,11 @@ App.location = sumeru.controller.create(function(env, session){
             userName = userNameTemp;
             localStorage.setItem('userName',userName);
             viewRoot.querySelector('#setting').style.display = "none";
-            session.set('groupId',Library.generateId.getGroupId());
-            session.commit();
 
+            if(!groupId || Library.generateId.isAdministrator(groupId)) {
+                session.set('groupId',Library.generateId.getGroupId());
+                session.commit();
+            }
         });
 
         var timeInt= setInterval(function(){
@@ -135,6 +142,19 @@ App.location = sumeru.controller.create(function(env, session){
                 Library.location.genererateLoction(map,isFakeLoc,locSuccessCallback);
             }
         },100);
+
+        if(!userName) {
+            alert("先输入用户名");
+            $('#setting').show();
+        }
+
+
+        function settingPanelToggle(){
+            if(userName) {
+                $('#setting').toggle();
+                $('#invitation_flow').hide();
+            }
+        }
     };
 
     locSuccessCallback = function(position) {

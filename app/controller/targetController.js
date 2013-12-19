@@ -32,7 +32,8 @@ App.target = sumeru.controller.create(function(env, session){
         });
 
         Library.touch.on('#setDestination','touchend',function(){
-            document.getElementById('selectDestinationMethod').style.display = "block";
+            $('#selectDestinationMethod').toggle();
+            $('#r-result').hide();
         });
 
         Library.touch.on('#setAddressFormLBS','touchend',function(){
@@ -41,14 +42,13 @@ App.target = sumeru.controller.create(function(env, session){
 
         Library.touch.on('#inputAddress','touchend',function(){
             //获取输入目的地的值
-            document.getElementById('selectDestinationMethod').style.display = "none";
-
-            document.getElementById('r-result').style.display = "block";
+            $('#selectDestinationMethod').hide();
+            $('#r-result').show();
 
         });
 
         Library.touch.on('#cancelOption','touchend',function(){
-            document.getElementById('selectDestinationMethod').style.display = "none";
+            $('#selectDestinationMethod').hide();
         });
 
 
