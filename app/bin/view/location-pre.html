@@ -1,31 +1,24 @@
+
+    
+        
+        
+        
+            
+        
+    
+
+
 <div id="location_container">
     <div id="topBar">
-        <button id="top_setting">设置</button>
+        <button id="back">返回</button>
         <span>聚点</span>
-        <button id="invitation">邀请</button>         
+        <button id="modify_address">修改</button>         
     </div>
     <div id="map"></div>
-
-    <div id="setting">
-        <block tpl-id="settingBlock">
-            名字：
-            <input id="usernameInput" type="text"/>
-            <button id="setUsername">确定</button>
-            {{#if isAdmin}}
-                <button id="goTarget">重新设置终点</button>
-            {{/if}}
-            <button id="settingClose">关闭</button>          
-        </block>
+    <div id="username">
+        <input id="usernameInput" type="text"/>
+        <button id="setUsername">确定</button>
     </div>
-
-    <div id="invitation_flow">
-        <label id="shareLink"></label>
-        <button id="smsMethod">短信邀请</button>   
-        <button id="weixinMethod">微信邀请</button> 
-        <button id="erweimaMethod">二维码邀请</button>   
-        <button id="shareClose">关闭</button>     
-    </div>
-
     <div>
         <block tpl-id="locationLogBlock">
             {{#if displayLocData}}
@@ -64,4 +57,5 @@
             {{/if}}
         </block>
     </div>
+>>>>>>> 73629ab8202a040802db41ccf2c8bd565edef678
 </div>

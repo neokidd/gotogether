@@ -78,13 +78,39 @@ App.location = sumeru.controller.create(function(env, session){
         var usernameInput = viewRoot.querySelector("#usernameInput");
         usernameInput.value = userName;
 
-        Library.touch.on('#modify_address',"touchend",function(){
+        Library.touch.on('#top_setting',"touchend",function(){
             viewRoot.querySelector('#setting').style.display = "block";
 
         });
 
+
         Library.touch.on('#settingClose',"touchend",function(){
             viewRoot.querySelector('#setting').style.display = "none";
+
+        });
+
+        Library.touch.on('#invitation',"touchend",function(){
+            viewRoot.querySelector('#invitation_flow').style.display = "block";
+
+        });
+
+        Library.touch.on('#smsMethod',"touchend",function(){
+            //短信分享
+
+        });
+
+        Library.touch.on('#weixinMethod',"touchend",function(){
+            //微信分享
+
+        });
+
+        Library.touch.on('#erweimaMethod',"touchend",function(){
+            //二维码分享
+
+        });
+
+        Library.touch.on('#shareClose',"touchend",function(){
+            viewRoot.querySelector('#invitation_flow').style.display = "none";
 
         });
 

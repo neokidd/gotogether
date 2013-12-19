@@ -3,38 +3,7 @@
         <span>聚点</span>
     </div>
     <div id="main_option_container" scroll="no">
-        <div id="baseinfo">
-            <block tpl-id="setTarget">
-                <label id="username-title" for="userName">用户名：</label>
-                <input id="userName" type="text"/>
-                <br/>
-
-                <button id="setTarget">设定目的地</button>
-                <br/>
-                <label for="targetName">目的地：</label>
-                <input id="targetName" type="text" readonly />
-                <br/>
-            </block>
-        </div>
-        <div id="shareinfo">
-            <br/>
-            <button id="generateGroup">生成分享链接</button>
-            <br/>
-            <input id="shareLink" type="text" readonly />
-            <br/>
-            <a href="sms:12345654321">发短信</a>
-            <a href="https://itunes.apple.com/cn/app/id414478124" id="openApp">微信分享</a>
-            <br/>
-            <button id="goLocation">去定位页面</button>
-        </div>
-        <div id="debugOptions">
-            <block tpl-id="debugOptions">
-                {{#if debug}}
-                    debug选项：
-                    <input type="checkbox" id="displayLocData" />显示坐标数据
-                    <input type="checkbox" id="fakeLoc" />模拟产生坐标
-                {{/if}}
-            </block>
-        </div>
+        <img src="./assets/pic/logo.png"/>
+        <button id="setTarget">设定目的地</button>
     </div>
 </div>
