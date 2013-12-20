@@ -146,7 +146,7 @@ input{
 	z-index: 90130;
 }
 
-#r-result{
+#r-result,r-result-choose-pos {
 	position:absolute; 
     top: 44px;
     z-index:80130; 

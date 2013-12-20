@@ -5,7 +5,8 @@
         <span id="invitation">邀请</span>         
     </div>
     <div id="map"></div>
-
+    
+    
     <div id="inputNameFlow">
         名字：
         <input id="username" type="text"/>
@@ -13,15 +14,15 @@
     </div>
 
     <div id="setting">
+        名字：
+        <input id="usernameInput" type="text"/>
+        <button id="setUsername">确定</button>
         <block tpl-id="settingBlock">
-            名字：
-            <input id="usernameInput" type="text"/>
-            <button id="setUsername">确定</button>
             {{#if isAdmin}}
                 <button id="goTarget">重新设置终点</button>
             {{/if}}
-            <button id="settingClose">关闭</button>          
         </block>
+        <button id="settingClose">关闭</button>
     </div>
 
     <div id="invitation_flow">

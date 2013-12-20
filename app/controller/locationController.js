@@ -15,7 +15,8 @@ App.location = sumeru.controller.create(function(env, session){
 
     var userId = Library.generateId.getUserId();
     var usersInfo = {};
-    var historyLocMaxLen = 10;
+    var historyLocMaxLen = 50;
+    var distanceClearThreshold = 2000;
     var userName = localStorage.getItem('userName') || '';
     var groupId;
 
@@ -30,6 +31,7 @@ App.location = sumeru.controller.create(function(env, session){
     var getLocation = function(){
 
         groupId = session.get('groupId');
+        session.get('refresh');
 
         if(!groupId || !userName) {
             return;
@@ -37,7 +39,7 @@ App.location = sumeru.controller.create(function(env, session){
 
         fetchOptions.groupId = groupId;
         var isDisplayLocData = "true" == session.get('displayLocData');
-        isFakeLoc = true;//"true" == session.get('fakeLoc');
+        isFakeLoc = parseInt(session.get('fakeLoc'));
 
         session.location = env.subscribe('pubLocation', fetchOptions,function(locationCollection){
             locationCollection.getData().forEach(function(item){
@@ -50,7 +52,7 @@ App.location = sumeru.controller.create(function(env, session){
             });
 
             session.bind('settingBlock', {
-                isAdmin: Library.generateId.isAdministrator(groupId)
+                isAdmin: false//Library.generateId.isAdministrator(groupId)
             });
 
             if(!usersInfo[targetId] || sessionStorage.getItem('updateTargetFlag')){
@@ -76,19 +78,44 @@ App.location = sumeru.controller.create(function(env, session){
         map = Library.bMapUtil.initMap(viewRoot.querySelector('#map'));
 
         var usernameInput = viewRoot.querySelector("#usernameInput");
-        usernameInput.value = userName;
+        var usernameFirst = viewRoot.querySelector("#username");
 
-        Library.touch.on('#top_setting',"touchend",settingPanelToggle);
+        if(userName) {
+            $("#inputNameFlow").hide();
+        }
 
+        Library.touch.on('#setUsernameBtn','touchend',function(){
+            var userNameTemp = usernameFirst.value.trim();
+            if(setUserName(userNameTemp)) {
+                $("#inputNameFlow").hide();
+            }
+        });
+
+        Library.touch.on("#setUsername","touchend",function(){
+            var userNameTemp = usernameInput.value.trim();
+            if(setUserName(userNameTemp)) {
+                $("#setting").hide();
+            }
+        });
+
+        Library.touch.on("#goTarget","touchend",function(){
+
+        });
 
         Library.touch.on('#settingClose',"touchend",function(){
             if(userName) {
                 $('#setting').hide();
-            } else {
-                alert('input your name firstly');
             }
+        });
 
 
+        Library.touch.on('#top_setting',"touchend",function (){
+            if(userName) {
+                $('#setting').toggle();
+                $('#invitation_flow').hide();
+
+                usernameInput.value = userName;
+            }
         });
 
         Library.touch.on('#invitation',"touchend",function(){
@@ -119,42 +146,39 @@ App.location = sumeru.controller.create(function(env, session){
 
         });
 
-        Library.touch.on("#setUsername","touchend",function(){
-            var userNameTemp = usernameInput.value.trim();
-            if('' == userNameTemp){
+        function setUserName(userNameVal){
+            if('' == userNameVal){
                 alert('input your name firstly');
                 return false;
             }
 
-            userName = userNameTemp;
+            userName = userNameVal;
             localStorage.setItem('userName',userName);
-            viewRoot.querySelector('#setting').style.display = "none";
+            tryStart();
 
-            if(!groupId || Library.generateId.isAdministrator(groupId)) {
-                session.set('groupId',Library.generateId.getGroupId());
+            return true;
+        }
+
+
+        function tryStart(){
+            if(userName) {
+                if(!groupId) {
+                    session.set('groupId',Library.generateId.getGroupId());
+                }
+                session.set('refresh',1);
                 session.commit();
             }
-        });
+        };
+
 
         var timeInt= setInterval(function(){
-            if(groupId) {
+            if(groupId && usersInfo && usersInfo[targetId] && usersInfo[targetId].coordinate) {
                 clearInterval(timeInt);
-                Library.location.genererateLoction(map,isFakeLoc,locSuccessCallback);
+                Library.location.genererateLoction(map,isFakeLoc,locSuccessCallback,'',usersInfo[targetId].coordinate[0]);
             }
         },100);
 
-        if(!userName) {
-            alert("先输入用户名");
-            $('#setting').show();
-        }
-
-
-        function settingPanelToggle(){
-            if(userName) {
-                $('#setting').toggle();
-                $('#invitation_flow').hide();
-            }
-        }
+        tryStart();
     };
 
     locSuccessCallback = function(position) {
@@ -169,7 +193,16 @@ App.location = sumeru.controller.create(function(env, session){
 
             session.location.add(newItem);
         } else{
+            //断线前后获取位置两点距离过远，不保留断线前的历史数据
             var currLocLen = usersInfo[userId].coordinate.length;
+            if(currLocLen > 0){
+                var currentLoc = usersInfo[userId].coordinate[currLocLen - 1];
+                if(map.getDistance(currentLoc,position) > distanceClearThreshold){
+                    usersInfo[userId].coordinate.splice(0,currLocLen);
+                }
+            }
+
+            currLocLen = usersInfo[userId].coordinate.length;
             if(historyLocMaxLen <= currLocLen ) {
                 usersInfo[userId].coordinate.splice(0,currLocLen - historyLocMaxLen );
             }
@@ -194,7 +227,7 @@ App.location = sumeru.controller.create(function(env, session){
                 alert("终点数据不可用，请重新设置终点！");
                 env.redirect('/target');
             } else {
-                var targetName = '目的地:' + sessionStorage.getItem('targetAddress');
+                var targetName = sessionStorage.getItem('targetAddress');
 
                 if(!usersInfo[targetId]) {
                     var newItem = {

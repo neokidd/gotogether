@@ -21,6 +21,7 @@ App.home = sumeru.controller.create(function(env, session){
         var status = sumeru.reachability.getStatus();
 
         console.log("network_status:"+status);
+        Library.bMapUtil.getLocation(function(){},function(){});
 
         session.event('setTarget',function(){
             Library.touch.on("#setTarget","touchend", function(){
