@@ -16,7 +16,7 @@ Library.location = sumeru.Library.create(function(exports){
 
         this.map = map;
 
-        isFake?fakeGenFunc(1,callBack,targetPos):realGenFunc(callBack);
+        isFake?fakeGenFunc(isFake,callBack,targetPos):realGenFunc(callBack);
     };
 
     exports.formatLoction = function(originPoint){
@@ -156,8 +156,8 @@ Library.location = sumeru.Library.create(function(exports){
             var startPos = generateNewLoc();
             startPos = new BMap.Point(startPos.lng,startPos.lat);
 
-            var driving2 = new BMap.DrivingRoute(map, {renderOptions:{map: map, autoViewport: false}});    //驾车实例
-            driving2.search(startPos, targetPos);    //显示一条公交线路
+//            var driving2 = new BMap.DrivingRoute(map, {renderOptions:{map: map, autoViewport: false}});    //驾车实例
+//            driving2.search(startPos, targetPos);    //显示一条公交线路
 
             var run = function (){
                 var driving = new BMap.DrivingRoute(map);    //驾车实例

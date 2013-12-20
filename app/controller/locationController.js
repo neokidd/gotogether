@@ -15,7 +15,8 @@ App.location = sumeru.controller.create(function(env, session){
 
     var userId = Library.generateId.getUserId();
     var usersInfo = {};
-    var historyLocMaxLen = 10;
+    var historyLocMaxLen = 50;
+    var distanceClearThreshold = 2000;
     var userName = localStorage.getItem('userName') || '';
     var groupId;
 
@@ -37,7 +38,7 @@ App.location = sumeru.controller.create(function(env, session){
 
         fetchOptions.groupId = groupId;
         var isDisplayLocData = "true" == session.get('displayLocData');
-        isFakeLoc = true;//"true" == session.get('fakeLoc');
+        isFakeLoc = 1;//"true" == session.get('fakeLoc');
 
         session.location = env.subscribe('pubLocation', fetchOptions,function(locationCollection){
             locationCollection.getData().forEach(function(item){
@@ -183,7 +184,16 @@ App.location = sumeru.controller.create(function(env, session){
 
             session.location.add(newItem);
         } else{
+            //断线前后获取位置两点距离过远，不保留断线前的历史数据
             var currLocLen = usersInfo[userId].coordinate.length;
+            if(currLocLen > 0){
+                var currentLoc = usersInfo[userId].coordinate[currLocLen - 1];
+                if(map.getDistance(currentLoc,position) > distanceClearThreshold){
+                    usersInfo[userId].coordinate.splice(0,currLocLen);
+                }
+            }
+
+            currLocLen = usersInfo[userId].coordinate.length;
             if(historyLocMaxLen <= currLocLen ) {
                 usersInfo[userId].coordinate.splice(0,currLocLen - historyLocMaxLen );
             }
