@@ -3,7 +3,7 @@
  */
 Library.location = sumeru.Library.create(function(exports){
 
-    exports.genererateLoction = function(map,isFake,successCallback,errorCallback){
+    exports.genererateLoction = function(map,isFake,successCallback,errorCallback,targetPos){
         var callBack = {
             error: errorCallback || function(error){
                 console.log('H5 failed ', error);
@@ -16,7 +16,7 @@ Library.location = sumeru.Library.create(function(exports){
 
         this.map = map;
 
-        isFake?fakeGenFunc(callBack):realGenFunc(callBack);
+        isFake?fakeGenFunc(1,callBack,targetPos):realGenFunc(callBack);
     };
 
     exports.formatLoction = function(originPoint){
@@ -42,10 +42,16 @@ Library.location = sumeru.Library.create(function(exports){
         return formatPot;
     };
 
+    var timeInterval = {
+        l1:2000,
+        l2:5000,
+        l3:10000,
+        l4:20000,
+        l5:40000
+    };
 
     var realGenFunc = function(callback){
 
-        var timeInterval = 15000;
         var positionOptions = {
             enableHighAccuracy:true,
             maximumAge:14000
@@ -77,11 +83,25 @@ Library.location = sumeru.Library.create(function(exports){
         }
 
         generateNewLoc();
-        setInterval(generateNewLoc,timeInterval);
+        setInterval(generateNewLoc,timeInterval['l3']);
     };
 
+    var fakeGenFunc = function(strategy,callback,targetPos){
+        /**
+         * 产生假的的定位点的策略
+         * 0：完全随机
+         * 1：开始点随机，终点由外界输入，路程上的点由巡路算法算出
+         * 2：开始点和终点由外界输入，路程上的点由巡路算法算出
+         */
+         var fakeGenStrategy = {
+             0: randomGenFunc,
+             1: goTargetWithRandomStartPoint,
+             2: goTargetWithRealStartPoint
+         }
 
-    var fakeGenFunc = function(callback){
+        strategy || (strategy = 0);
+
+        //-------------
 
         var baseLoc = {
             lng:116.387428,
@@ -89,9 +109,8 @@ Library.location = sumeru.Library.create(function(exports){
         };
 
         var baseStep = 0.05;
-        var timeInterval = 5000;
 
-        var generateNewLoc = function(){
+        function generateNewLoc(){
             var newLoc = {};
             var currentLoc = exports.currentLoc;
             if(!currentLoc) {
@@ -105,8 +124,7 @@ Library.location = sumeru.Library.create(function(exports){
             newLoc.time = new Date().getTime();
             exports.currentLoc = newLoc;
 
-            callback.success(newLoc);
-
+            return newLoc;
         };
 
         function adjustValue(rate){
@@ -118,9 +136,65 @@ Library.location = sumeru.Library.create(function(exports){
             return adjust;
         };
 
-        generateNewLoc();
-        setInterval(generateNewLoc,timeInterval);
+        function randomGenFunc(){
+            var newLoc = generateNewLoc();
+            callback.success(newLoc);
 
+            setInterval(function(){
+                newLoc = generateNewLoc();
+                callback.success(newLoc);
+            },timeInterval['l2']);
+        }
+
+
+        function goTargetWithRandomStartPoint(){
+
+            if(!targetPos) return;
+            var map = exports.map;
+
+            targetPos = new BMap.Point(targetPos.lng,targetPos.lat);
+            var startPos = generateNewLoc();
+            startPos = new BMap.Point(startPos.lng,startPos.lat);
+
+            var driving2 = new BMap.DrivingRoute(map, {renderOptions:{map: map, autoViewport: false}});    //驾车实例
+            driving2.search(startPos, targetPos);    //显示一条公交线路
+
+            var run = function (){
+                var driving = new BMap.DrivingRoute(map);    //驾车实例
+                driving.search(startPos, targetPos);
+                driving.setSearchCompleteCallback(function(){
+                    var pts = driving.getResults().getPlan(0).getRoute(0).getPath();    //通过驾车实例，获得一系列点的数组
+                    pts.reverse();//use pop instead of shift
+
+                    var newLoc = pts.pop();
+                    if(newLoc) {
+                        callback.success(newLoc);
+
+                        var timeInt = setInterval(function(){
+                            var newLoc = pts.pop();
+                            if(newLoc) {
+                                callback.success(newLoc);
+                            } else {
+                                clearInterval(timeInt);
+                            }
+                        },timeInterval['l1']);
+                    }
+
+                });
+            }
+
+            setTimeout(function(){
+                run();
+            },1500);
+            
+        }
+
+        function goTargetWithRealStartPoint(){
+
+        }
+
+
+        fakeGenStrategy[strategy]();
     };
 
     return exports;

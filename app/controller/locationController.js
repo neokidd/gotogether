@@ -86,11 +86,6 @@ App.location = sumeru.controller.create(function(env, session){
             var userNameTemp = usernameFirst.value.trim();
             if(setUserName(userNameTemp)) {
                 $("#inputNameFlow").hide();
-
-                if(!groupId) {
-                    session.set('groupId',Library.generateId.getGroupId());
-                    session.commit();
-                }
             }
         });
 
@@ -157,14 +152,20 @@ App.location = sumeru.controller.create(function(env, session){
 
             userName = userNameVal;
             localStorage.setItem('userName',userName);
+
+            if(!groupId) {
+                session.set('groupId',Library.generateId.getGroupId());
+                session.commit();
+            }
+
             return true;
         }
 
 
         var timeInt= setInterval(function(){
-            if(groupId) {
+            if(groupId && usersInfo && usersInfo[targetId] && usersInfo[targetId].coordinate) {
                 clearInterval(timeInt);
-                Library.location.genererateLoction(map,isFakeLoc,locSuccessCallback);
+                Library.location.genererateLoction(map,isFakeLoc,locSuccessCallback,'',usersInfo[targetId].coordinate[0]);
             }
         },100);
 
