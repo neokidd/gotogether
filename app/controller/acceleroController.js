@@ -31,11 +31,11 @@ App.accel = sumeru.controller.create(function(env, session) {
 
             console.log("Accel JS " + x + ", " + y + "," + z);
 
-             for(var i = 1 ; i < 200 ; i++) {  
+             for(var i = 1 ; i < 60 ; i++) {  
                     s1[i-1] = s[i] ;  
                 }
 
-                s1[199]=y;
+                s1[59]=y;
 
                 if (s1[0]!==0)
                 {
@@ -44,20 +44,22 @@ App.accel = sumeru.controller.create(function(env, session) {
                 if(flag1==1)
                 {
                     
-                    for(i=1;i<30;i++){
-                        if(s1[100]>s1[100-i])
-                            if(s1[100]>11)
+                    console.log("Accel JS s1[30]" + s1[30]); 
+                    for(i=1;i<10;i++){
+                        if(s1[30]>s1[30-i])
+                            if(s1[30]>11)
                             i1++;
                     }
-                    for(i=1;i<30;i++){
-                        if(s1[100]>s1[100+i])
-                            if(s1[100]>11)
+                    for(i=1;i<10;i++){
+                        if(s1[30]>s1[30+i])
+                            if(s1[30]>11)
                             i1++;
                     }
-                    if (i1==58)
+                    console.log("Accel JS i1: " + i1);
+                    if (i1>=15)
                         step++;
                 }
-                console.log("steps:" + step);
+                console.log("Accel JS steps:" + step);
                 document.getElementById('step').innerText = step;
                 i1=0;
                 for(i = 0 ; i < 200 ; i++) {  
@@ -74,6 +76,8 @@ App.accel = sumeru.controller.create(function(env, session) {
             document.getElementById('timestamp').innerText = ret.timestamp;
 
             detectSteps(ret);
+            // detectSteps(ret);
+            // detectSteps(ret);
         };
 
 
@@ -91,7 +95,7 @@ App.accel = sumeru.controller.create(function(env, session) {
         var acceleration_id;
         var watchAcceleration = function() {
             var device = nuwa.require('device');
-            ID = device.accelerometer.watchAcceleration(successCallback, errorCallback, {frequency: 500});
+            ID = device.accelerometer.watchAcceleration(successCallback, errorCallback, {frequency: 100});
             var idspan = document.getElementById('acceleration_id');
             idspan.innerHTML = ID;
             acceleration_id = ID;
