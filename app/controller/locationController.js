@@ -38,7 +38,7 @@ App.location = sumeru.controller.create(function(env, session){
 
         fetchOptions.groupId = groupId;
         var isDisplayLocData = "true" == session.get('displayLocData');
-        isFakeLoc = 1;//"true" == session.get('fakeLoc');
+        isFakeLoc = parseInt(session.get('fakeLoc'));
 
         session.location = env.subscribe('pubLocation', fetchOptions,function(locationCollection){
             locationCollection.getData().forEach(function(item){

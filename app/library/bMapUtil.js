@@ -48,7 +48,8 @@ Library.bMapUtil = sumeru.Library.create(function(exports){
 
         var defaultPositionOptions = {
             enableHighAccuracy:true,
-            maximumAge:15000
+//            timeout:10000,
+            maximumAge:14000
         }
 
         var defaultCallback = function(error){
@@ -56,14 +57,15 @@ Library.bMapUtil = sumeru.Library.create(function(exports){
         };
 
         errorCallback || (errorCallback = defaultCallback);
-
-        geolocation.getCurrentPosition(locCallback);
-        loadingFunc && loadingFunc();
+        succCallback || (succCallback = function(){});
 
         var locCallback = function(pos){
             var status = geolocation.getStatus();
             BMAP_STATUS_SUCCESS == status ? succCallback(pos):errorCallback(status);
         }
+
+        geolocation.getCurrentPosition(locCallback);
+        loadingFunc && loadingFunc();
 
     };
 
@@ -72,7 +74,7 @@ Library.bMapUtil = sumeru.Library.create(function(exports){
         gc.getLocation(pt, function(rs){
             var addComp = rs.addressComponents;
             var address = addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber;
-            callback(addCompOriObj,addressStr);
+            callback(addComp,address);
         });
     }
 
