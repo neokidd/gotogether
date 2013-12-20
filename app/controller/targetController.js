@@ -20,8 +20,10 @@ App.target = sumeru.controller.create(function(env, session){
         map = Library.bMapUtil.initMap(viewRoot.querySelector('#map'));
         Library.bMapUtil.keywordLocation(map,viewRoot.querySelector('#suggestId'),keyworkLocationCallback);
         var suggestAdressInput = viewRoot.querySelector('#suggestId');
-        var goOnBtn = viewRoot.querySelector("#goOn");
-        goOnBtn.disabled = true;
+
+//        if(!sessionStorage.getItem('targetPos-lat')) {
+            $("#goOn").hide();
+//        }
 
         Library.touch.on('#goOn','touchend',function(){
             env.redirect('/location');
@@ -86,8 +88,9 @@ App.target = sumeru.controller.create(function(env, session){
         };
 
         function finishSetAddress(){
-            goOnBtn.disabled = false;
+            $("#goOn").show();
         }
+
 
         function setAddress(addressObj,addressStr){
             suggestAdressInput.value = addressStr;

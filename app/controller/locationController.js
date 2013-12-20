@@ -51,7 +51,7 @@ App.location = sumeru.controller.create(function(env, session){
             });
 
             session.bind('settingBlock', {
-                isAdmin: Library.generateId.isAdministrator(groupId)
+                isAdmin: false//Library.generateId.isAdministrator(groupId)
             });
 
             if(!usersInfo[targetId] || sessionStorage.getItem('updateTargetFlag')){
@@ -153,14 +153,18 @@ App.location = sumeru.controller.create(function(env, session){
 
             userName = userNameVal;
             localStorage.setItem('userName',userName);
-
-            if(!groupId) {
-                session.set('groupId',Library.generateId.getGroupId());
-                session.commit();
-            }
+            tryStart();
 
             return true;
         }
+
+
+        function tryStart(){
+            if(!groupId && userName) {
+                session.set('groupId',Library.generateId.getGroupId());
+                session.commit();
+            }
+        };
 
 
         var timeInt= setInterval(function(){
@@ -170,6 +174,7 @@ App.location = sumeru.controller.create(function(env, session){
             }
         },100);
 
+        tryStart();
     };
 
     locSuccessCallback = function(position) {
@@ -218,7 +223,7 @@ App.location = sumeru.controller.create(function(env, session){
                 alert("终点数据不可用，请重新设置终点！");
                 env.redirect('/target');
             } else {
-                var targetName = '目的地:' + sessionStorage.getItem('targetAddress');
+                var targetName = sessionStorage.getItem('targetAddress');
 
                 if(!usersInfo[targetId]) {
                     var newItem = {
