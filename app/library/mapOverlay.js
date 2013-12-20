@@ -7,6 +7,7 @@ Library.mapOverlay = sumeru.Library.create(function(exports){
         var role = function(roleData){
             var me = this;
             var bm;
+            var stat = {};
             this.dataSource = roleData;
 
             var getUserIdentity = function(){
@@ -19,6 +20,15 @@ Library.mapOverlay = sumeru.Library.create(function(exports){
 
             var isTarget = function(){
                 return me.dataSource.userId === "target";
+            }
+
+            var figureOutStat = function() {
+                me.stat.speed = dataSource.speed || calSpeed();
+                me.stat.isStar = {}; 
+            }
+
+            var calSpeed = function() {
+        
             }
 
             var marker;

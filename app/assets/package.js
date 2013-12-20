@@ -3,5 +3,6 @@
  */
 sumeru.packages(
     'css/map.css',
-    'js/jquery-1.10.2.min.js'
+    'js/jquery-1.10.2.min.js',
+    'js/absorb.js'
 );
