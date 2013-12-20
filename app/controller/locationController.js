@@ -31,6 +31,7 @@ App.location = sumeru.controller.create(function(env, session){
     var getLocation = function(){
 
         groupId = session.get('groupId');
+        session.get('refresh');
 
         if(!groupId || !userName) {
             return;
@@ -160,8 +161,11 @@ App.location = sumeru.controller.create(function(env, session){
 
 
         function tryStart(){
-            if(!groupId && userName) {
-                session.set('groupId',Library.generateId.getGroupId());
+            if(userName) {
+                if(!groupId) {
+                    session.set('groupId',Library.generateId.getGroupId());
+                }
+                session.set('refresh',1);
                 session.commit();
             }
         };

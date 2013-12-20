@@ -101,6 +101,7 @@ App.target = sumeru.controller.create(function(env, session){
         };
 
         function finishSetAddress(){
+            $('#r-result').show();
             $("#goOn").show();
         }
 
